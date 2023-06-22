@@ -6,6 +6,7 @@ function App() {
   const [contractAddress, setContractAddress] = useState('');
   const [priceSummary, setPriceSummary] = useState(null);
   const [blockchain, setBlockchain] = useState('eth-main');
+  const [currency, setCurrency] = useState('USD')
   const [error, setError] = useState(null);
 
 
@@ -31,7 +32,12 @@ function App() {
     setBlockchain(event.target.value);
   };
 
-  const checkData = (data) => (data ? data : 'N/A');
+  const checkData = (data) => {
+    if (!data || isNaN(data)) {
+      return 'N/A'
+    } 
+    return data
+  }
 
   return (
     <div className='App'>
@@ -46,6 +52,10 @@ function App() {
           <option value="bsc-main">bsc-main</option>
           <option value="eth-goerli">eth-goerli</option>
         </select>
+        <select name="currency" value={currency} onChange={(e) => setCurrency(e.target.value)}>
+          <option value="USD">USD</option>
+          <option value="native">Native Currency</option>
+        </select>
         <input
             type="text"
             placeholder="Contract Address"
@@ -54,7 +64,6 @@ function App() {
           />
         <button onClick={fetchData}>View Price Dashboard</button>
       </div>
-      {console.log('priceSummary:', priceSummary)}
       {error ? (
         <p className="errorMessage">{error}</p>
       ) : (priceSummary && (
@@ -64,22 +73,40 @@ function App() {
               <th>Period</th>
               <th>Total Transfers</th>
               <th>Available Prices</th>
-              <th>Min Price USD</th>
-              <th>Max Price USD</th>
-              <th>Avg Price USD</th>
+              { currency === 'USD' ? (
+                <>
+                  <th>Min Price USD</th>
+                  <th>Max Price USD</th>
+                  <th>Avg Price USD</th>
+                </>
+              ) : (
+                <>
+                  <th>Min Price Native</th>
+                  <th>Max Price Native</th>
+                  <th>Avg Price Native</th>
+                </>
+              )}
             </tr>
           </thead>
           <tbody>
             {Object.keys(priceSummary).map((period) => (
               <tr style={{ backgroundColor: '#f2f2f2' }} key={period}>
-                {console.log('Period:', period)}
-                {console.log('priceSummary.period', priceSummary.one_day)}
                 <td>{period}</td>
                 <td>{checkData(priceSummary[period].total_transfers)}</td>
                 <td>{checkData(priceSummary[period].available_prices)}</td>
-                <td>{checkData(priceSummary[period].min_price_usd)}</td>
-                <td>{checkData(priceSummary[period].max_price_usd)}</td>
-                <td>{checkData(priceSummary[period].avg_price_usd)}</td>
+                { currency === 'USD' ? (
+                <>
+                  <td>{checkData(parseFloat(priceSummary[period].min_price_usd).toFixed(2))}</td>
+                  <td>{checkData(parseFloat(priceSummary[period].max_price_usd).toFixed(2))}</td>
+                  <td>{checkData(parseFloat(priceSummary[period].avg_price_usd).toFixed(2))}</td>
+                </>
+              ) : (
+                <>
+                  <td>{checkData(parseFloat(priceSummary[period].min_price_native).toFixed(7))}</td>
+                  <td>{checkData(parseFloat(priceSummary[period].max_price_native).toFixed(7))}</td>
+                  <td>{checkData(parseFloat(priceSummary[period].avg_price_native).toFixed(7))}</td>
+                </>
+              )}
               </tr>
             ))}
           </tbody>
