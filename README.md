@@ -287,7 +287,7 @@ th {
 }
 ```
 
-## STEP 5: Running THE application
+## STEP 5: RUNNING THE APPLICATION
 
 Now, you can start your application by running `npm start` in your terminal. You should see the following in the browser:
 
