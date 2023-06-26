@@ -62,13 +62,12 @@ We will add a function `fetchData` to our component that makes a get request to 
 const fetchData = async () => {
     const options = {
       method: 'GET',
-      url: `http://localhost:8080/v1/collections/pricesummary/contract/${contractAddress}?chain=${blockchain}`,
+      url: `https://api.blockspan.com/v1/collections/pricesummary/contract/${contractAddress}?chain=${blockchain}`,
       headers: { accept: 'application/json', 'X-API-KEY': 'YOUR_BLOCKSPAN_API_KEY' }
     };
 
     try {
       const response = await axios.request(options);
-      console.log('response', response);
       setPriceSummary(response.data.price_summary);
       setError(null);
     } catch (error) {

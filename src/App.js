@@ -9,18 +9,15 @@ function App() {
   const [currency, setCurrency] = useState('USD')
   const [error, setError] = useState(null);
 
-
-  // Timestap at end of url for testing, remove at end
   const fetchData = async () => {
     const options = {
       method: 'GET',
-      url: `http://localhost:8080/v1/collections/pricesummary/contract/${contractAddress}?chain=${blockchain}&timestamp_end=2023-01-04T18:30:00Z`,
-      headers: { accept: 'application/json', 'X-API-KEY': '2jhzbqIWanB8puiqySBIWJVf6Ovp7oPW' }
+      url: `https://api.blockspan.com/v1/collections/pricesummary/contract/${contractAddress}?chain=${blockchain}`,
+      headers: { accept: 'application/json', 'X-API-KEY': 'YOUR_BLOCKSPAN_API_KEY' }
     };
 
     try {
       const response = await axios.request(options);
-      console.log('response', response);
       setPriceSummary(response.data.price_summary);
       setError(null);
     } catch (error) {
